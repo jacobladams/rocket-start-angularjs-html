@@ -1,0 +1,22 @@
+tfignore
+gitignore
+
+libraries
+
+responsive meta tags
+
+
+dev libs
+	toastr
+	kendo?
+	bootswatch
+
+
+ability to load common libs from cdn
+
+gulp
+	typescript
+	sass
+	images
+	icon font?
+	browsersync

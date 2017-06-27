@@ -1,0 +1,46 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add 'gulpjs/gulp.git#4.0' --dev
+
+PATH: 
+  C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\ProgramData\chocolatey\bin;C:\Users\jacob\AppData\Local\Apps\2.0\3KBQ1YLC.B7G\O046E9BC.7DY\boxs..tion_4b037e62ccd024b7_0002.0005_be57ddd41911ccdf\Chocolatey\bin;C:\Program Files\Microsoft SQL Server\120\Tools\Binn\;C:\Program Files\Microsoft\Web Platform Installer\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;%TFSPowerToolDir%;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\Calibre2\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Program Files (x86)\Yarn\bin;C:\Users\jacob\.dnx\runtimes\dnx-clr-win-x86.1.0.0-rc1-final\bin;C:\Users\jacob\.dnx\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\ProgramData\chocolatey\bin;C:\Users\jacob\AppData\Local\Apps\2.0\3KBQ1YLC.B7G\O046E9BC.7DY\boxs..tion_4b037e62ccd024b7_0002.0005_be57ddd41911ccdf\Chocolatey\bin;C:\Program Files\Microsoft DNX\Dnvm\;C:\Program Files\Microsoft SQL Server\120\Tools\Binn\;C:\Program Files\nodejs\;C:\Program Files (x86)\Git\bin;C:\Program Files (x86)\Microsoft VS Code\bin;C:\Program Files\Docker Toolbox;C:\Users\jacob\AppData\Local\Microsoft\WindowsApps;C:\Users\jacob\AppData\Roaming\npm;C:\Users\jacob\AppData\Local\Yarn\.bin
+
+Yarn version: 
+  0.23.4
+
+Node version: 
+  6.9.5
+
+Platform: 
+  win32 x64
+
+npm manifest: 
+  {
+    "name": "rocket-start-angularjs-html",
+    "version": "0.0.1",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Jake Adams",
+    "license": "MIT",
+    "dependencies": {
+      
+    },
+    "devDependencies": {
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
+
+Trace: 
+  Error: Error connecting to repository. Please, check the url.
+      at C:\Program Files (x86)\Yarn\lib\resolvers\exotics\hosted-git-resolver.js:163:15
+      at next (native)
+      at step (C:\Program Files (x86)\Yarn\node_modules\babel-runtime\helpers\asyncToGenerator.js:17:30)
+      at C:\Program Files (x86)\Yarn\node_modules\babel-runtime\helpers\asyncToGenerator.js:28:13
+      at process._tickCallback (internal/process/next_tick.js:103:7)
