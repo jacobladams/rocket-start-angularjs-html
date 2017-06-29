@@ -5,6 +5,8 @@ var browserSync = require('browser-sync');
 var config = require('./gulp.config')();
 var del = require('del');
 var merge = require('merge-stream');
+// var eventStream = require('event-stream');
+//var streamQueue = require('streamqueue');
 var path = require('path');
 //var _ = require('lodash');
 var $ = require('gulp-load-plugins')({ lazy: true });
@@ -70,16 +72,34 @@ gulp.task('build-shared-scripts', function () {
 
 gulp.task('build-scripts', gulp.series('clean-scripts', gulp.parallel('build-shared-scripts', function () {
 
-    log('Compiling typescript, minifying, and creating sourcemaps');
+    
 
     var tsProject = $.typescript.createProject("tsconfig.json", {
         outFile: config.scripts.buildFileName
     });
 
-    return tsProject.src()
-        .pipe($.plumber())    
-        .pipe($.sourcemaps.init({ loadMaps: true })) // This means sourcemaps will be generated 
-        .pipe(tsProject()).js
+    log('Compiling Angular template cache');    
+
+    var templateCache = gulp.src(config.angularTemplates.src)
+        //.pipe($.plumber())
+        //.pipe($.sourcemaps.init({ loadMaps: true })) // This means sourcemaps will be generated     
+        .pipe($.angularTemplatecache(config.angularTemplates.options));
+    
+
+    log('Compiling typescript, minifying, and creating sourcemaps');
+
+
+    var typeScript = merge(tsProject.src())
+        //.pipe($.plumber())
+        //.pipe($.sourcemaps.init({ loadMaps: true })) // This means sourcemaps will be generated 
+        .pipe(tsProject()).js;
+    
+
+   return merge(typeScript, templateCache)
+    //return eventStream.merge(typeScript, templateCache)
+    //return streamQueue(typeScript, templateCache)
+    //return typeScript
+        .pipe($.concat(config.scripts.buildFileName))    
         .pipe($.uglify()) // You can use other plugins that also support gulp-sourcemaps 
         .pipe($.sourcemaps.write('./')) // Now the sourcemaps are added to the .js file 
         .pipe(gulp.dest(config.scripts.build));
@@ -117,18 +137,27 @@ gulp.task('build-styles', gulp.series(['clean-styles', gulp.parallel('build-shar
 
 
 
-// gulp.task('images', gulp.series(['clean-images', function () {
-//     log('Copying and compressing the images');
-// }]));
+gulp.task('images', gulp.series(['clean-images', function () {
+    log('Copying and compressing the images');
+
+    return gulp
+        .src(config.images.src)
+        .pipe($.imagemin({optimizationLevel: 4}))
+        .pipe(gulp.dest(config.images.build));
+}]));
 
 
 
-// gulp.task('fonts', gulp.series(['clean-fonts', function () {
-//     log('Copying fonts');
-// }]));
+gulp.task('fonts', gulp.series(['clean-fonts', function () {
+    log('Copying fonts');
+
+    return gulp
+        .src(config.fonts.src)
+        .pipe(gulp.dest(config.fonts.build));
+}]));
 
 
-// gulp.task('build', gulp.parallel(['build-scripts', 'build-styles',  'images', 'fonts']));
+gulp.task('build', gulp.parallel(['build-scripts', 'build-styles',  'images', 'fonts']));
 
 
 

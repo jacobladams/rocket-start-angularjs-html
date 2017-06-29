@@ -7,6 +7,24 @@ module.exports = function () {
     // var sassBuild = temp + 'styles/';
 
 	var config = {
+		angularTemplates: {
+			src: client + '/app/**.html',
+			options: {
+				module: 'rocket-start-templates',
+				standalone:true
+			}
+		},
+		fonts: {
+			src: client + '/assets/fonts/**',
+			build: build + '/assets/fonts',
+			clean: build + '/assets/fonts/**'
+		},
+		images: {
+			src: client + '/assets/images/**',
+			build: build + '/assets/images',
+			buildFileName: 'sprite.png',
+			clean: build + '/assets/image/**'
+		},
 		scripts: {
 			// src: client + '/app/**.ts',
 			build: build + '/scripts',

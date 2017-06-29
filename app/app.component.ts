@@ -8,7 +8,7 @@ class AppController {
 }
 
 angular.module('rocket-start').component('app', {
-	// templateUrl: './app.component.html',
-	template: '<h1>Title: {{$ctrl.title}}</h1>',
+	templateUrl: 'app.component.html',
+	//template: '<h1>Title: {{$ctrl.title}}</h1>',
 	controller: AppController
 });

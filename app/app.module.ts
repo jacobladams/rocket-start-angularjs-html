@@ -1,4 +1,4 @@
-angular.module('rocket-start', []);
+angular.module('rocket-start', ['rocket-start-templates']);
 
 
 
