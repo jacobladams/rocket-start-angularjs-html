@@ -10,7 +10,7 @@ var merge = require('merge-stream');
 var path = require('path');
 //var _ = require('lodash');
 var $ = require('gulp-load-plugins')({ lazy: true });
-
+var port = process.env.PORT || config.browserSync.port;
 
 //todo: 
 //    javascript
@@ -106,7 +106,7 @@ gulp.task('build-scripts', gulp.series('clean-scripts', gulp.parallel('build-sha
 })));
 
 
-gulp.task('build-shared-style', function () {
+gulp.task('build-shared-styles', function () {
 
     log('Compiling shared style, minifying, and creating sourcemaps');
 
@@ -122,7 +122,7 @@ gulp.task('build-shared-style', function () {
 
 
 
-gulp.task('build-styles', gulp.series(['clean-styles', gulp.parallel('build-shared-scripts', function () {
+gulp.task('build-styles', gulp.series(['clean-styles', gulp.parallel('build-shared-styles', function () {
     log('Compiling styles, minifying, and creating sourcemaps');
 
     return gulp.src(config.styles.src)
@@ -159,22 +159,42 @@ gulp.task('fonts', gulp.series(['clean-fonts', function () {
 
 gulp.task('build', gulp.parallel(['build-scripts', 'build-styles',  'images', 'fonts']));
 
-
-
 // gulp.task('watch-scripts', function (done) {
-//    // return gulp.watch([config.sass, config.js, config.html, config.images, config.htmlLayouts], gulp.series(['build']));
-//     gulp.watch([config.js], gulp.series(['build-scripts']));
+//     gulp.watch([config.scripts.watch], gulp.series(['build-scripts']));
 //     done();
 // });
 
-// gulp.task('watch', gulp.parallel(['watch-scripts', 'watch-styles', 'watch-html', 'watch-images']))
+gulp.task('watch-scripts', function (done) {
+    gulp.watch([config.scripts.watch], gulp.series(['build-scripts', function (done) {
+        browserSync.reload();
+        done();
+    }]));
+    done();
+});
 
-
-// gulp.task('browsersync', function (done) {
-//     startBrowserSync(done);
+// gulp.task('watch-styles', function (done) {
+//     gulp.watch([config.styles.watch], gulp.series(['build-styles']));
+//     done();
 // });
 
-// gulp.task('serve-build', gulp.series(['build', gulp.parallel(['watch', 'browsersync'])]));
+
+gulp.task('watch-styles', function (done) {
+    gulp.watch([config.styles.watch], gulp.series(['build-styles', function (done) {
+        browserSync.reload();
+        done();
+    }]));
+    done();
+});
+
+// gulp.task('watch', gulp.parallel(['watch-scripts', 'watch-styles', 'watch-html', 'watch-images']))
+gulp.task('watch', gulp.parallel(['watch-scripts', 'watch-styles']))
+
+
+gulp.task('browsersync', function (done) {
+    startBrowserSync(done);
+});
+
+gulp.task('serve-build', gulp.series(['build', gulp.parallel(['watch', 'browsersync'])]));
 
 
 
@@ -191,58 +211,58 @@ gulp.task('build', gulp.parallel(['build-scripts', 'build-styles',  'images', 'f
 // //     done();
 // // }
 
-// function startBrowserSync( done) {
-//     log('first ' + port);
-//     if (args.nosync || browserSync.active) {
-//         return;
-//     }
+function startBrowserSync( done) {
+    log('first ' + port);
+    if (args.nosync || browserSync.active) {
+        return;
+    }
 
-//     log('Starting browser-sync on port ' + port);
+    log('Starting browser-sync on port ' + port);
 
 
-//     var options = {
-//         port: port,
-//         files: [
-//             config.build + '**/*'
-//         ],
-//         //    files: isDev ? [
-//         //        config.client + '**/*.*',
-//         //        '!' + config.sass,
-//         //        config.temp + '**/*.css'
-//         //    ] : [],
-//         //     files: [
-//         //        config.client + '**/*.*',
-//         //        '!' + config.sass,
-//         //        config.temp + '**/*.css'
-//         //    ],
-//         ghostMode: {
-//             clicks: true,
-//             location: false,
-//             forms: true,
-//             scroll: true
-//         },
-//         injectChanges: true,
-//         logFileChanges: true,
-//         logLevel: 'debug',
-//         logPrefix: 'gulp-patterns',
-//         notify: true,
-//         reloadDelay: 250,
-//         browser: config.browserSync.browser,
-//         startPath: config.browserSync.startPath,
-//         server: {
-//             baseDir: config.build
-//         }
-//     };
+    var options = {
+        port: port,
+        // files: config.browserSync.files,
+        //    files: isDev ? [
+        //        config.client + '**/*.*',
+        //        '!' + config.sass,
+        //        config.temp + '**/*.css'
+        //    ] : [],
+        //     files: [
+        //        config.client + '**/*.*',
+        //        '!' + config.sass,
+        //        config.temp + '**/*.css'
+        //    ],
+        ghostMode: {
+            clicks: true,
+            location: false,
+            forms: true,
+            scroll: true
+        },
+        injectChanges: true,
+        logFileChanges: true,
+        logLevel: 'debug',
+        logPrefix: 'gulp-patterns',
+        notify: true,
+        reloadDelay: 250,
+        browser: config.browserSync.browser,
+        startPath: config.browserSync.startPath,
+        server: true
+        // server: {
+        //     baseDir: config.build
+        // }
+    };
 
-//     //    if (specRunner) {
-//     //        options.startPath = config.specRunnerFile;
-//     //    }
+    //    if (specRunner) {
+    //        options.startPath = config.specRunnerFile;
+    //    }
 
-//     //    browserSync(options);
+    //    browserSync(options);
 
-//     browserSync.init(options);
-//     done();
-// }
+    browserSync.init(options);
+    done();
+    // browserSync(options, done);
+}
 
 
 function clean(path, done) {

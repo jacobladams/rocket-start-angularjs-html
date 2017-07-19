@@ -1,22 +1,25 @@
-tfignore
-gitignore
-
-libraries
-
-responsive meta tags
 
 
-dev libs
-	toastr
-	kendo?
-	bootswatch
+use lates jquery package versions and tsconfig lib setting
+update to latest node sass
+
+add	bootswatch?
+
+angular
+	change bootstraping order?
+	have app component have shell and routing in it?
 
 
 ability to load common libs from cdn
 
 gulp
-	typescript
-	sass
-	images
+x	typescript
+x	sass
+x	images
+x	fonts copy
 	icon font?
+x	angular template cache
+	sprite images
 	browsersync
+	split shared script from scripts for faster watch/browsersync
+	move all of browsersync config to gulp config

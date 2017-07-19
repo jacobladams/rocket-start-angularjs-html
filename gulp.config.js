@@ -6,14 +6,15 @@ module.exports = function () {
 	var build = './dist';
     // var sassBuild = temp + 'styles/';
 
-	var config = {
+    var config = {
+		build: build,
 		angularTemplates: {
 			src: client + '/app/**.html',
 			options: {
 				module: 'rocket-start-templates',
 				standalone:true
 			}
-		},
+        },
 		fonts: {
 			src: client + '/assets/fonts/**',
 			build: build + '/assets/fonts',
@@ -26,10 +27,11 @@ module.exports = function () {
 			clean: build + '/assets/image/**'
 		},
 		scripts: {
-			// src: client + '/app/**.ts',
+			// src: client + '/app/**/*.ts',
 			build: build + '/scripts',
 			buildFileName: 'app.min.js',
 			clean: build + '/scripts/**',
+			watch: client + '/app/**/*.ts',
 
 			shared: [
 				client + '/node_modules/jquery/dist/jquery.js',
@@ -48,12 +50,22 @@ module.exports = function () {
 			build: build + '/styles',
 			buildFileName: 'styles.min.css',
 			clean: build + '/styles/**',
+			watch: client + '/app/**/*.scss',
 			shared: [
-				// client + '/node_modules/bootstrap/dist/css/bootstrap.css'
+				client + '/node_modules/bootstrap/dist/css/bootstrap.css'
 				// 'kendo'
 				// 'toastr'
 			],
 			sharedFileName: 'shared.min.css',
+		},
+		browserSync: {
+			port: 3001,
+			browser : ['chrome'],
+			// browser : ['chrome', 'edge', 'Internet Explorer', firefox','opera'],
+        	startPath: '/index.html',
+			files: [
+            	build + '/**/*'
+        	]
 		}
 	};
 	return config;

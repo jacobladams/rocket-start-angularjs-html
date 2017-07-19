@@ -6,8 +6,15 @@
      	"removeComments": true,
         "preserveConstEnums":true,
         // "outFile": /local/tsc.js",
-        "sourceMap": true
+        "sourceMap": true,
+        "lib": [
+            "dom",
+            "es5",
+            "scripthost",
+            "es2015.iterable"
+        ]
     },
+    
     "include": [
         "app/app.module.ts",
         "app/**/*.ts"
