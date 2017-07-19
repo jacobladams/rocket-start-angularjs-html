@@ -38,6 +38,11 @@ gulp.task('clean-scripts', function (done) {
     return clean(config.scripts.clean, done);
 });
 
+
+gulp.task('clean-shared-scripts', function (done) {
+    return clean(config.sharedScripts.clean, done);
+});
+
 gulp.task('clean-fonts', function (done) {
     return clean(config.fonts.clean, done);
 });
@@ -56,23 +61,21 @@ gulp.task('clean-styles', function (done) {
 // });
 
 
-gulp.task('build-shared-scripts', function () {
+gulp.task('build-shared-scripts', gulp.series('clean-shared-scripts', function () {
 
     log('Compiling shared JavaScript, minifying, and creating sourcemaps');
 
-    return gulp.src(config.scripts.shared)
+    return gulp.src(config.sharedScripts.src)
         .pipe($.plumber())        
         .pipe($.sourcemaps.init({loadMaps: true})) // This means sourcemaps will be generated 
-        .pipe($.concat(config.scripts.sharedFileName))
+        .pipe($.concat(config.sharedScripts.buildFileName))
         .pipe($.uglify()) // You can use other plugins that also support gulp-sourcemaps 
         .pipe($.sourcemaps.write('./')) // Now the sourcemaps are added to the .js file 
-        .pipe(gulp.dest(config.scripts.build));
-});
+        .pipe(gulp.dest(config.sharedScripts.build));
+}));
 
 
-gulp.task('build-scripts', gulp.series('clean-scripts', gulp.parallel('build-shared-scripts', function () {
-
-    
+gulp.task('build-scripts', gulp.series('clean-scripts', function () {
 
     var tsProject = $.typescript.createProject("tsconfig.json", {
         outFile: config.scripts.buildFileName
@@ -103,7 +106,7 @@ gulp.task('build-scripts', gulp.series('clean-scripts', gulp.parallel('build-sha
         .pipe($.uglify()) // You can use other plugins that also support gulp-sourcemaps 
         .pipe($.sourcemaps.write('./')) // Now the sourcemaps are added to the .js file 
         .pipe(gulp.dest(config.scripts.build));
-})));
+}));
 
 
 gulp.task('build-shared-styles', function () {
@@ -120,8 +123,6 @@ gulp.task('build-shared-styles', function () {
         .pipe(gulp.dest(config.styles.build));
 });
 
-
-
 gulp.task('build-styles', gulp.series(['clean-styles', gulp.parallel('build-shared-styles', function () {
     log('Compiling styles, minifying, and creating sourcemaps');
 
@@ -135,8 +136,6 @@ gulp.task('build-styles', gulp.series(['clean-styles', gulp.parallel('build-shar
         .pipe(gulp.dest(config.styles.build));
 })]));
 
-
-
 gulp.task('images', gulp.series(['clean-images', function () {
     log('Copying and compressing the images');
 
@@ -146,8 +145,6 @@ gulp.task('images', gulp.series(['clean-images', function () {
         .pipe(gulp.dest(config.images.build));
 }]));
 
-
-
 gulp.task('fonts', gulp.series(['clean-fonts', function () {
     log('Copying fonts');
 
@@ -156,13 +153,7 @@ gulp.task('fonts', gulp.series(['clean-fonts', function () {
         .pipe(gulp.dest(config.fonts.build));
 }]));
 
-
-gulp.task('build', gulp.parallel(['build-scripts', 'build-styles',  'images', 'fonts']));
-
-// gulp.task('watch-scripts', function (done) {
-//     gulp.watch([config.scripts.watch], gulp.series(['build-scripts']));
-//     done();
-// });
+gulp.task('build', gulp.parallel(['build-scripts', 'build-shared-scripts', 'build-styles',  'images', 'fonts']));
 
 gulp.task('watch-scripts', function (done) {
     gulp.watch([config.scripts.watch], gulp.series(['build-scripts', function (done) {
@@ -171,12 +162,6 @@ gulp.task('watch-scripts', function (done) {
     }]));
     done();
 });
-
-// gulp.task('watch-styles', function (done) {
-//     gulp.watch([config.styles.watch], gulp.series(['build-styles']));
-//     done();
-// });
-
 
 gulp.task('watch-styles', function (done) {
     gulp.watch([config.styles.watch], gulp.series(['build-styles', function (done) {
@@ -189,7 +174,6 @@ gulp.task('watch-styles', function (done) {
 // gulp.task('watch', gulp.parallel(['watch-scripts', 'watch-styles', 'watch-html', 'watch-images']))
 gulp.task('watch', gulp.parallel(['watch-scripts', 'watch-styles']))
 
-
 gulp.task('browsersync', function (done) {
     startBrowserSync(done);
 });
@@ -198,11 +182,6 @@ gulp.task('serve-build', gulp.series(['build', gulp.parallel(['watch', 'browsers
 
 
 
-
-
-// function serve(isDev, specRunner, done) {
-//      startBrowserSync(isDev, specRunner, done);
-// }
 
 
 // // function watch(done) {
@@ -219,47 +198,13 @@ function startBrowserSync( done) {
 
     log('Starting browser-sync on port ' + port);
 
-
-    var options = {
-        port: port,
-        // files: config.browserSync.files,
-        //    files: isDev ? [
-        //        config.client + '**/*.*',
-        //        '!' + config.sass,
-        //        config.temp + '**/*.css'
-        //    ] : [],
-        //     files: [
-        //        config.client + '**/*.*',
-        //        '!' + config.sass,
-        //        config.temp + '**/*.css'
-        //    ],
-        ghostMode: {
-            clicks: true,
-            location: false,
-            forms: true,
-            scroll: true
-        },
-        injectChanges: true,
-        logFileChanges: true,
-        logLevel: 'debug',
-        logPrefix: 'gulp-patterns',
-        notify: true,
-        reloadDelay: 250,
-        browser: config.browserSync.browser,
-        startPath: config.browserSync.startPath,
-        server: true
-        // server: {
-        //     baseDir: config.build
-        // }
-    };
-
     //    if (specRunner) {
     //        options.startPath = config.specRunnerFile;
     //    }
 
     //    browserSync(options);
 
-    browserSync.init(options);
+    browserSync.init(config.browserSync);
     done();
     // browserSync(options, done);
 }

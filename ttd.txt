@@ -1,7 +1,7 @@
 
 
-use lates jquery package versions and tsconfig lib setting
-update to latest node sass
+x use lates jquery package versions and tsconfig lib setting
+x update to latest node sass
 
 add	bootswatch?
 
@@ -21,5 +21,8 @@ x	fonts copy
 x	angular template cache
 	sprite images
 	browsersync
-	split shared script from scripts for faster watch/browsersync
-	move all of browsersync config to gulp config
+		watch fonts
+		watch images
+x	split shared script from scripts for faster watch/browsersync
+	split shared styles from styles for faster watch/browsersync?
+x	move all of browsersync config to gulp config
