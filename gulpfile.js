@@ -10,7 +10,6 @@ var merge = require('merge-stream');
 var path = require('path');
 //var _ = require('lodash');
 var $ = require('gulp-load-plugins')({ lazy: true });
-var port = process.env.PORT || config.browserSync.port;
 
 //todo: 
 //    javascript
@@ -70,6 +69,10 @@ gulp.task('build-shared-scripts', gulp.series('clean-shared-scripts', function (
         .pipe($.sourcemaps.init({loadMaps: true})) // This means sourcemaps will be generated 
         .pipe($.concat(config.sharedScripts.buildFileName))
         .pipe($.uglify()) // You can use other plugins that also support gulp-sourcemaps 
+        .pipe($.sourcemaps.mapSources(function(sourcePath, file) {
+        // source paths are prefixed with '../../' 
+            return '../../' + sourcePath;
+        }))
         .pipe($.sourcemaps.write('./')) // Now the sourcemaps are added to the .js file 
         .pipe(gulp.dest(config.sharedScripts.build));
 }));
@@ -85,7 +88,7 @@ gulp.task('build-scripts', gulp.series('clean-scripts', function () {
 
     var templateCache = gulp.src(config.angularTemplates.src)
         //.pipe($.plumber())
-        //.pipe($.sourcemaps.init({ loadMaps: true })) // This means sourcemaps will be generated     
+        .pipe($.sourcemaps.init({ loadMaps: true })) // This means sourcemaps will be generated     
         .pipe($.angularTemplatecache(config.angularTemplates.options));
     
 
@@ -94,7 +97,7 @@ gulp.task('build-scripts', gulp.series('clean-scripts', function () {
 
     var typeScript = merge(tsProject.src())
         //.pipe($.plumber())
-        //.pipe($.sourcemaps.init({ loadMaps: true })) // This means sourcemaps will be generated 
+        .pipe($.sourcemaps.init({ loadMaps: true })) // This means sourcemaps will be generated 
         .pipe(tsProject()).js;
     
 
@@ -103,7 +106,11 @@ gulp.task('build-scripts', gulp.series('clean-scripts', function () {
     //return streamQueue(typeScript, templateCache)
     //return typeScript
         .pipe($.concat(config.scripts.buildFileName))    
-        .pipe($.uglify()) // You can use other plugins that also support gulp-sourcemaps 
+       .pipe($.uglify()) // You can use other plugins that also support gulp-sourcemaps 
+       .pipe($.sourcemaps.mapSources(function(sourcePath, file) {
+        // source paths are prefixed with '../../' 
+            return '../../' + sourcePath;
+        }))
         .pipe($.sourcemaps.write('./')) // Now the sourcemaps are added to the .js file 
         .pipe(gulp.dest(config.scripts.build));
 }));
@@ -119,6 +126,10 @@ gulp.task('build-shared-styles', function () {
         .pipe($.sass())
         .pipe($.concat(config.styles.sharedFileName))
         .pipe($.csso()) // You can use other plugins that also support gulp-sourcemaps 
+        .pipe($.sourcemaps.mapSources(function(sourcePath, file) {
+        // source paths are prefixed with '../../' 
+            return '../../' + sourcePath;
+        }))
         .pipe($.sourcemaps.write('./')) // Now the sourcemaps are added to the .js file 
         .pipe(gulp.dest(config.styles.build));
 });
@@ -132,6 +143,10 @@ gulp.task('build-styles', gulp.series(['clean-styles', gulp.parallel('build-shar
         .pipe($.sass())
         .pipe($.concat(config.styles.buildFileName))
         .pipe($.csso()) // You can use other plugins that also support gulp-sourcemaps 
+        .pipe($.sourcemaps.mapSources(function(sourcePath, file) {
+        // source paths are prefixed with '../../' 
+            return '../../' + sourcePath;
+        }))
         .pipe($.sourcemaps.write('./')) // Now the sourcemaps are added to the .js file 
         .pipe(gulp.dest(config.styles.build));
 })]));
@@ -156,7 +171,7 @@ gulp.task('fonts', gulp.series(['clean-fonts', function () {
 gulp.task('build', gulp.parallel(['build-scripts', 'build-shared-scripts', 'build-styles',  'images', 'fonts']));
 
 gulp.task('watch-scripts', function (done) {
-    gulp.watch([config.scripts.watch], gulp.series(['build-scripts', function (done) {
+    gulp.watch([config.scripts.watch, config.angularTemplates.watch], gulp.series(['build-scripts', function (done) {
         browserSync.reload();
         done();
     }]));
@@ -191,12 +206,12 @@ gulp.task('serve-build', gulp.series(['build', gulp.parallel(['watch', 'browsers
 // // }
 
 function startBrowserSync( done) {
-    log('first ' + port);
+    // log('first ' + port);
     if (args.nosync || browserSync.active) {
         return;
     }
 
-    log('Starting browser-sync on port ' + port);
+    // log('Starting browser-sync on port ' + port);
 
     //    if (specRunner) {
     //        options.startPath = config.specRunnerFile;

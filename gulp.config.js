@@ -13,7 +13,8 @@ module.exports = function () {
 			options: {
 				module: 'rocket-start-templates',
 				standalone:true
-			}
+			},
+			watch: client + '/app/**.html',
         },
 		fonts: {
 			src: client + '/assets/fonts/**',
